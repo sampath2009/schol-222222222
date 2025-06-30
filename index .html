@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>බ/හීවැල්කඳුර මහා විද්‍යාලය</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-brown: #5c3018; /* Deep Brown */
+            --secondary-brown: #764332; /* Slightly lighter brown */
+            --accent-gold: #FFD700; /* Gold for highlights */
+            --text-light: #F5F5DC; /* Creamy white */
+            --text-dark: #413434;
+            --background-dark: #654125; /* Even darker brown for animation */
+        }
+        body {
+            font-family: 'Noto Sans Sinhala', sans-serif; margin: 0; padding: 0; box-sizing: border-box; background-color: var(--primary-brown); color: var(--text-light); overflow-x: hidden; position: relative;
+        }
+        #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 25px; transition: opacity 0.5s ease-out; }
+        .spinner { width: 80px; height: 80px; border-radius: 50%; border: 8px solid var(--secondary-brown); border-top-color: var(--accent-gold); animation: spin 1.2s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loader-text { color: var(--accent-gold); font-size: 1.6em; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.7); }
+        .loader-text::after { content: '...'; display: inline-block; width: 1.5em; text-align: left; animation: loading-dots 1.5s steps(4, end) infinite; }
+        @keyframes loading-dots { 0% { content: ''; } 33% { content: '.'; } 66% { content: '..'; } 100% { content: '...'; } }
+        .animated-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: linear-gradient(135deg, var(--background-dark) 0%, var(--primary-brown) 100%); animation: gradientShift 15s ease infinite; }
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .circles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; }
+        .circles li { position: absolute; display: block; list-style: none; width: 20px; height: 20px; background: rgba(255, 255, 255, 0.1); animation: animate 25s linear infinite; bottom: -150px; border-radius: 50%; }
+        .circles li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; } .circles li:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; } .circles li:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; } .circles li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; } .circles li:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; } .circles li:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; } .circles li:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; } .circles li:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; } .circles li:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; } .circles li:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+        @keyframes animate { 0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; } 100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; } }
+        .header { background-color: rgba(0, 0, 0, 0.4); padding: 20px 0; text-align: center; border-bottom: 2px solid var(--accent-gold); position: relative; z-index: 10; }
+        .school-logo { width: 120px; height: auto; display: block; margin: 0 auto 15px; border: 3px solid var(--accent-gold); border-radius: 8px; padding: 5px; background-color: rgba(0,0,0,0.2); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); }
+        .school-name { color: var(--accent-gold); font-size: 2.5em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); }
+        .navbar { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 20px; }
+        .nav-button { background-color: var(--secondary-brown); color: var(--text-light); border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 1.05em; font-weight: bold; transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; text-decoration: none; display: inline-block; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); }
+        .nav-button:hover { background-color: var(--primary-brown); transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6); }
+        .hero-section { position: relative; height: 100vh; background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjmlfOIMX3IR-NQDvuRyt0ucL_JOPtLGD2ZcVdLWRpDYlkNnN1IfNHY43vjtFkYHR0YyQKcVv3eO5QkY6G54SkA9InLOJKMczHC3vQfdey0x9wTWmeE7c_C84az74A4Fr_7hV5qm83qX1_d1UlvO4t3NM9NBFGX6Gk1XwIqVR6s_lfhgCTfQIuLs-Yc49yK/s1000/Screenshot%20(329).png'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; color: white; z-index: 5; overflow: hidden; }
+        .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1; }
+        .hero-content { position: relative; z-index: 2; padding: 20px; animation: simple-fade-in 2s forwards; }
+        .hero-content h1 { font-size: 3.5em; margin: 0; color: #FFFFFF; font-weight: 700; text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8); }
+        .hero-content h2 { font-size: 2.5em; margin-top: 10px; }
+        .hero-content p { font-size: 1.2em; margin-top: 20px; max-width: 600px; }
+        .hero-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; }
+        .particle { position: absolute; background-color: rgba(255, 215, 0, 0.5); border-radius: 50%; animation: rise 10s infinite linear; opacity: 0; }
+        @keyframes rise { to { transform: translateY(-100vh); opacity: 1; } }
+        .slideshow-container { max-width: 1200px; position: relative; margin: 40px auto 0; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); border: 3px solid var(--accent-gold); }
+        .mySlides { display: none; width: 100%; animation-duration: 8s; animation-fill-mode: forwards; }
+        .mySlides img { vertical-align: middle; width: 100%; height: 550px; object-fit: cover; }
+        .prev, .next { cursor: pointer; position: absolute; top: 50%; width: auto; padding: 16px; margin-top: -22px; color: white; font-weight: bold; font-size: 20px; transition: 0.6s ease; border-radius: 0 3px 3px 0; user-select: none; background-color: rgba(0, 0, 0, 0.5); z-index: 15; }
+        .next { right: 0; border-radius: 3px 0 0 3px; }
+        .prev:hover, .next:hover { background-color: rgba(0, 0, 0, 0.8); }
+        .text { color: #f2f2f2; font-size: 1.5em; font-weight: bold; padding: 12px 16px; position: absolute; bottom: 20px; width: 100%; text-align: center; background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0)); text-shadow: 2px 2px 4px #000; }
+        @keyframes kenburns-top { 0% { transform: scale(1) translateY(0); transform-origin: 50% 16%; } 100% { transform: scale(1.25) translateY(-15px); transform-origin: top; } } .kenburns-top { animation-name: kenburns-top; }
+        @keyframes kenburns-bottom { 0% { transform: scale(1) translateY(0); transform-origin: 50% 84%; } 100% { transform: scale(1.25) translateY(15px); transform-origin: bottom; } } .kenburns-bottom { animation-name: kenburns-bottom; }
+        @keyframes kenburns-left { 0% { transform: scale(1) translate(0, 0); transform-origin: 16% 50%; } 100% { transform: scale(1.25) translate(-20px, 15px); transform-origin: left; } } .kenburns-left { animation-name: kenburns-left; }
+        @keyframes kenburns-right { 0% { transform: scale(1) translate(0, 0); transform-origin: 84% 50%; } 100% { transform: scale(1.25) translate(20px, -15px); transform-origin: right; } } .kenburns-right { animation-name: kenburns-right; }
+        @keyframes simple-fade-in { 0% { opacity: 0; } 100% { opacity: 1; } } .simple-fade-in { animation-name: simple-fade-in; animation-duration: 2s; }
+        @keyframes zoom-in { 0% { transform: scale(1); opacity: 0; } 100% { transform: scale(1.1); opacity: 1; } } .zoom-in { animation-name: zoom-in; }
+        @keyframes zoom-out { 0% { transform: scale(1.2); opacity: 0; } 100% { transform: scale(1.1); opacity: 1; } } .zoom-out { animation-name: zoom-out; }
+        .section { padding: 60px 20px; margin: 40px auto; max-width: 1200px; background-color: rgba(74, 43, 26, 0.8); border-radius: 10px; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); text-align: center; position: relative; z-index: 5; opacity: 0; transform: translateY(40px); transition: opacity 1s ease-out, transform 1s ease-out; }
+        .section.visible { opacity: 1; transform: translateY(0); }
+        .section h2 { color: var(--accent-gold); font-size: 2.2em; margin-bottom: 25px; position: relative; display: inline-block; }
+        .section h2::after { content: ''; position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%); width: 80px; height: 3px; background-color: var(--accent-gold); border-radius: 2px; }
+        .section p { font-size: 1.1em; line-height: 1.8; margin-bottom: 20px; }
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px; align-items: start; }
+        .media-card { background-color: var(--secondary-brown); border-radius: 10px; padding: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; }
+        .media-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 16px rgba(0,0,0,0.5); }
+        .media-card img { width: 100%; height: 280px; object-fit: cover; border-radius: 8px; border: 3px solid var(--accent-gold); }
+        .media-card iframe { width: 100%; height: 280px; border-radius: 8px; border: 3px solid var(--accent-gold); }
+        .media-card .nav-button { margin-top: 20px; align-self: center; }
+        .teacher-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-top: 20px; justify-content: center; }
+        .teacher-card { background-color: var(--secondary-brown); border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .teacher-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); }
+        .teacher-card img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--accent-gold); margin-bottom: 15px; }
+        .teacher-card h3 { color: var(--text-light); font-size: 1.4em; margin-bottom: 5px; }
+        .teacher-card p { color: var(--text-light); font-size: 0.95em; margin: 5px 0; }
+        .staff-category-title { color: var(--accent-gold); font-size: 1.8em; margin-top: 50px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 2px solid rgba(255, 215, 0, 0.4); display: inline-block; }
+        .full-gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+        .photo-card-full { position: relative; background-color: var(--secondary-brown); border-radius: 10px; padding: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; }
+        .photo-card-full:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 8px 16px rgba(0,0,0,0.5); }
+        .photo-card-full img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; border: 3px solid var(--accent-gold); }
+        .photo-card-full iframe { width: 100%; height: 220px; border-radius: 8px; border: 3px solid var(--accent-gold); }
+        .photo-card-full p { text-align: center; margin-top: 10px; font-weight: bold; font-size: 0.95em; line-height: 1.4; }
+        .footer { background-color: var(--background-dark); color: var(--text-light); text-align: center; padding: 30px 20px; margin-top: 50px; border-top: 2px solid var(--accent-gold); position: relative; z-index: 10; }
+        .hidden { display: none !important; }
+        .data-container { margin-top: 40px; display: flex; flex-direction: column; gap: 15px; }
+        .data-item { background-color: var(--secondary-brown); border-radius: 10px; padding: 20px 25px; text-align: left; font-size: 1.1em; font-weight: bold; display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: transform 0.3s ease, background-color 0.3s ease; cursor: pointer; }
+        .data-item:hover { transform: scale(1.03); background-color: #654125; }
+        .data-item::before { content: ''; width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 15px solid var(--accent-gold); margin-right: 20px; }
+        .uniform-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 40px; justify-content: center; }
+        .uniform-card { background-color: var(--secondary-brown); border-radius: 10px; padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); text-align: center; transition: transform 0.3s ease; }
+        .uniform-card:hover { transform: translateY(-5px); }
+        .uniform-card img { width: 100%; height: 400px; object-fit: contain; border-radius: 8px; border: 4px solid var(--accent-gold); background-color: rgba(0,0,0,0.2); margin-bottom: 15px; }
+        .uniform-card h3 { color: var(--accent-gold); font-size: 1.6em; margin-top: 15px; margin-bottom: 0; }
+        .contact-details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin: 40px 0; text-align: center; }
+        .contact-detail-item { background: var(--secondary-brown); padding: 25px; border-radius: 8px; border-left: 5px solid var(--accent-gold); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .contact-detail-item:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.3); }
+        .contact-detail-item h3 { color: var(--accent-gold); margin-top: 0; font-size: 1.4em; margin-bottom: 10px; }
+        .contact-detail-item p { font-size: 1.1em; margin: 0; color: var(--text-light); font-weight: bold; }
+        .contact-form { margin-top: 40px; display: flex; flex-direction: column; gap: 20px; text-align: left; }
+        .form-group { display: flex; flex-direction: column; }
+        .contact-form label { margin-bottom: 8px; font-weight: bold; color: var(--text-light); font-size: 1.05em; }
+        .contact-form input, .contact-form textarea { background-color: rgba(0,0,0,0.3); border: 2px solid var(--secondary-brown); border-radius: 5px; padding: 12px; font-size: 1em; color: var(--text-light); font-family: 'Noto Sans Sinhala', sans-serif; transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+        .contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+        .form-submit-button { margin-top: 10px; align-self: center; width: fit-content; }
+        .form-status { margin-top: 20px; font-size: 1.1em; font-weight: bold; padding: 15px; border-radius: 5px; text-align: center; display: none; transition: all 0.3s ease; }
+        .form-status.success { background-color: #2E7D32; color: white; display: block; }
+        .form-status.error { background-color: #C62828; color: white; display: block; }
+        .creator-card-new { display: flex; flex-direction: column; align-items: center; gap: 25px; background-color: rgba(65, 52, 52, 0.4); border-radius: 15px; padding: 25px; max-width: 550px; margin: 30px auto 0; box-shadow: 0 8px 20px rgba(0,0,0,0.5); border: 2px solid var(--accent-gold); transition: transform 0.3s ease; }
+        @media (min-width: 550px) { .creator-card-new { flex-direction: row; } }
+        .creator-card-new:hover { transform: translateY(-5px); }
+        .creator-photo-new { flex-shrink: 0; }
+        .creator-photo-new img { width: 140px; height: 140px; object-fit: cover; border-radius: 50%; border: 4px solid var(--accent-gold); box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+        .creator-details-new { text-align: center; color: var(--text-light); width: 100%; }
+        @media (min-width: 550px) { .creator-details-new { text-align: left; } }
+        .creator-details-new h3 { color: var(--accent-gold); font-size: 2em; margin: 0 0 5px; font-weight: 700; }
+        .creator-details-new .title { font-size: 1.2em; margin: 0 0 15px 0; font-style: italic; }
+        .creator-details-new .contact-info p { font-size: 1.1em; margin: 8px 0; font-weight: 500; }
+        .whatsapp-button { background-color: #25D366; color: white !important; padding: 12px 20px; border-radius: 30px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; font-weight: bold; transition: background-color 0.3s ease, transform 0.2s ease; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); border: none; }
+        .whatsapp-button:hover { background-color: #128C7E; transform: scale(1.05); }
+        .whatsapp-button svg { width: 20px; height: 20px; fill: white; }
+        
+        /* --- Delete Button Style --- */
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #C62828; /* Red */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none; /* Initially hidden */
+            align-items: center;
+            justify-content: center;
+            line-height: 30px;
+            z-index: 20;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            transition: background-color 0.2s ease;
+        }
+        .delete-btn:hover { background-color: #e53935; }
+        .full-gallery-grid.admin-mode .delete-btn { display: flex; } /* Show button in admin mode */
+    </style>
+</head>
+<body>
+
+<div id="preloader"><div class="spinner"></div><div class="loader-text">කරුණාකර රැදිසිටින්න</div></div>
+<div class="animated-background"><ul class="circles"><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul></div>
+
+<header class="header">
+    <img class="school-logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhGKWvJRAhSnaaIEkDrQ-3a2jR4vqmLtNzutHz2_kpAqWRloRb5r8-0IJEprvUEe17hscOI8GYXyC4Ca2XXoiAwbXWzY7tTKhf4hyphenhyphenRQ_2bQcRd2arp5cFrfEwXdNJqaTSdsFBbHpgIExpSPplFdGyZkd4CJUZE0yR35co7oKorkPfFFcrtiFOOKIxuzzXX1/s859/baj.png" alt="පාසල් ලාංඡනය">
+    <h1 class="school-name">බ/හීවැල්කඳුර මහා විද්‍යාලය</h1>
+    <nav class="navbar">
+        <button class="nav-button" onclick="scrollToSection('about-school')">අපේ පාසල</button>
+        <button class="nav-button" onclick="scrollToSection('school-data')">පාසල් දත්ත</button>
+        <button class="nav-button" onclick="scrollToSection('our-teachers')">අපේ කාර්යය මණ්ඩලය</button>
+        <button class="nav-button" onclick="scrollToSection('school-uniform')">පාසලේ නිල ඇඳුම</button>
+        <button class="nav-button" onclick="scrollToSection('contact-us')">අප අමතන්න</button>
+        <button class="nav-button" onclick="scrollToSection('creator-section')">වෙබ් අඩවියේ නිර්මාණකරු</button>
+    </nav>
+</header>
+
+<div id="main-content-wrapper">
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div id="hero-particles-container" class="hero-particles"></div>
+    <div class="hero-content">
+        <h1>බ/හීවැල්කඳුර මහා විද්‍යාලයට</h1>
+        <h2>සාදරයෙන් පිළිගනිමු</h2>
+        <p>දැනුම, විනය සහ ගුණධර්ම තුළින් අනාගතය ජයගන්නා දරු පරපුරක් බිහිකරන තක්සලාව</p>
+    </div>
+</section>
+<div class="slideshow-container">
+    <div class="mySlides"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6rhpi4LDPOCFEboozRaEOdzD1e8lmcc55vuOXeInNdNB2kDi6s2bpeSqTKbG_CWZ1WyQO1A9B1nLFip4RocPnFuEeucRsQqfzzDQn8budwzEcFSh1xSPL_Pj8vVo76rtpuw_YIia9wI3EVvYFk-czMfcpytb8BSqvDYOxXDyy9WXrZ0_s5YIloUDtBeAY/s1200/srilanka.jpg1"><div class="text">අපේ පාසලේ සුන්දරත්වය 1</div></div>
+    <div class="mySlides"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiJaGCxF0F3BMN-Rhc_FcGeGVildoAVHpKHdhMpUitXutPaX0Acgv__zCwL9hVgDwaNtZ0wuydQH5Iew39yyRoU6punw72-2UgZNf8WXFvqXGiklAHth-KZkqnapE0r7cexmL7ckJYj2Y1mRoVFblwZQEJBCVzJ0mcm-ZAk6CAP7_FfjBnTWdPyEvT0mSln/s259/download%20(2).jpeg"><div class="text">අපේ පාසලේ සුන්දරත්වය 2</div></div>
+    <div class="mySlides"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSki7dyqEceA101txkhhgDAcOz7B4FacKIBJ4iVaOo75hr9NeQ-RQQVd4jPG9oAOfGKWMZIE46OXE5ESIMydZY75Ul4HEkIf4UWno0g7GCfnMeC_bhJgfYtTyo4UX7tfpWHOfGxHUdXxlfAHiI9YjR-ukGWEGps3b8l54DYOU8Zqrad2jXCANYMGp9F0Uo/s1024/25622879348_0605f3a5f2_b.jpg"><div class="text">අපේ පාසලේ සුන්දරත්වය 3</div></div>
+    <a class="prev" onclick="plusSlides(-1)">❮</a>
+    <a class="next" onclick="plusSlides(1)">❯</a>
+</div>
+
+<main id="main-content">
+    <section id="about-school" class="section">
+        <h2>අපේ පාසල ගැන</h2>
+        <p>බ/හීවැල්කඳුර මහා විද්‍යාලය යනු දැනුමෙන් හා ගුණධර්ම වලින් පිරිපුන් දරු පරපුරක් බිහි කිරීමේ අරමුණින් කටයුතු කරන ප්‍රමුඛ පෙළේ පාසලකි. අපගේ ඉතිහාසය, දැක්ම සහ මෙහෙවර පිළිබඳව මෙතැනින් වැඩි විස්තර දැනගත හැක.</p>
+        <h3 class="staff-category-title" style="margin-top: 60px;">පාසලේ ජයාරූප & Videos</h3>
+        <div class="media-grid">
+            <div class="media-card">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjmlfOIMX3IR-NQDvuRyt0ucL_JOPtLGD2ZcVdLWRpDYlkNnN1IfNHY43vjtFkYHR0YyQKcVv3eO5QkY6G54SkA9InLOJKMczHC3vQfdey0x9wTWmeE7c_C84az74A4Fr_7hV5qm83qX1_d1UlvO4t3NM9NBFGX6Gk1XwIqVR6s_lfhgCTfQIuLs-Yc49yK/s1000/Screenshot%20(329).png" alt="පාසලේ ඡායාරූපයක්">
+                <button class="nav-button" onclick="showPage('photo-gallery-page')">තව Photos බලන්න</button>
+            </div>
+            <div class="media-card">
+                <iframe src="https://www.youtube.com/embed/S3pQu6CcztU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <button class="nav-button" onclick="showPage('video-gallery-page')">තව Videos බලන්න</button>
+            </div>
+        </div>
+    </section>
+    <section id="school-data" class="section">
+        <h2>පාසල් දත්ත</h2>
+        <div class="data-container">
+            <div class="data-item">මුළු සිසුන් සංඛ්‍යාව: 363</div>
+            <div class="data-item">ගුරු මණ්ඩලයේ සංඛ්‍යාව: 28</div>
+            <div class="data-item">සාමාන්‍ය පෙළ සමත් ප්‍රතිශතය (2024): 55%</div>
+            <div class="data-item">අ.පො.ස. උසස් පෙළ (2024): 78%</div>
+        </div>
+    </section>
+    <section id="our-teachers" class="section">
+        <h2>අපේ කාර්යය මණ්ඩලය</h2>
+        <p>අපගේ දරුවන්ගේ අනාගතය සනසන, කැපවීමෙන් යුතුව කටයුතු කරන අපගේ ගුරු මණ්ඩලය මෙතැනින් හඳුනා ගන්න.</p>
+        <div class="teacher-grid">
+            <div class="teacher-card"><img src="https://via.placeholder.com/120?text=Photo" alt="විදුහල්පති"><h3_h3>නම</h3><p>විදුහල්පති</p></div>
+            <div class="teacher-card"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSlw_HMvvSIQIOXfo5gwiX2So6Srzwqfx9NJ03VQ_uwCIkLaLi4e8A-ah9rqwhZh2HbUoEsHF-q74uZoraTqYPgMCQY83rwwR1RDDzavMme710oWGHYY1HPYQ97qzRoSLhg89QRJ1Z1hzCRpPRRmfLeOLPKYCxedosc3sQ_OfTn7xHrzKmVfxFbvIbEBOS/s744/nayani%20ticha.jpg" alt="නයනි ගුරුතුමිය"><h3>නයනි ගුරුතුමිය</h3><p>විෂය: විද්‍යාව</p></div>
+            <div class="teacher-card"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgoZbyOtn-ppIaFCWfisTMtPobviivO2XwkkQo_NpD0rqLZfWEWt9TSuQPzLboH3jC03lKu_Rv2if-mdtVnuahT2RbAenGtPT184dI9POBIHVG6Eksm6otYTWJ4aBUt57tg5xWs7ZMnm2q_-YpR8BeY_k-Xly5jMH8MWjDu2apNQMixi8BaxWpUNzdyF9iS/s379/dumuni.jpg" alt="ඉදුමINI ගුරුතුමිය"><h3>ඉදුමිනි ගුරුතුමිය</h3><p>විෂය: ගණිතය</p></div>
+            <div class="teacher-card"><img src="https://via.placeholder.com/120?text=Photo" alt="කාර්ය මණ්ඩලය"><h3>නම</h3><p>විෂය / තනතුර</p></div>
+            <div class="teacher-card"><img src="https://via.placeholder.com/120?text=Photo" alt="කාර්ය මණ්ඩලය"><h3>නම</h3><p>විෂය / තනතුර</p></div>
+            <div class="teacher-card"><img src="https://via.placeholder.com/120?text=Photo" alt="කාර්ය මණ්ඩලය"><h3>නම</h3><p>විෂය / තනතුර</p></div>
+        </div>
+        <button class="nav-button" style="margin-top: 40px;" onclick="showPage('staff-page')">අපේ සියලු කාර්යය මණ්ඩලය බැලීමට</button>
+    </section>
+    <section id="school-uniform" class="section">
+        <h2>පාසලේ නිල ඇඳුම</h2>
+        <div class="uniform-grid">
+            <div class="uniform-card"><h3>පිරිමි ළමුන්</h3><img src="https://via.placeholder.com/400x600/764332/F5F5DC?text=%E0%B6%9C%E0%B7%90%E0%B7%84%E0%B7%90%E0%B6%AB%E0%B7%94+%E0%B6%B1%E0%B7%92%E0%B6%BD+%E0%B6%87%E0%B6%B3%E0%B7%94%E0%B6%B8" alt="පිරිමි ළමුන්ගේ නිල ඇඳුම"></div>
+            <div class="uniform-card"><h3>ගැහැණු ළමුන්</h3><img src="https://via.placeholder.com/400x600/764332/F5F5DC?text=%E0%B6%B4%E0%B7%92%E0%B6%BB%E0%B7%92%E0%B6%B8%E0%B7%92+%E0%B6%B1%E0%B7%92%E0%B6%BD+%E0%B6%87%E0%B6%B3%E0%B7%94%E0%B6%B8" alt="ගැහැණු ළමුන්ගේ නිල ඇඳුම"></div>
+        </div>
+    </section>
+    <section id="contact-us" class="section">
+        <h2>අප අමතන්න</h2>
+        <div class="contact-details-grid">
+            <div class="contact-detail-item"><h3>දුරකථන අංකය</h3><p>077-8529895</p></div>
+            <div class="contact-detail-item"><h3>ඊමේල් ලිපිනය</h3><p>dananjayas362@gmail.com</p></div>
+        </div>
+        <form id="contact-form" action="https://api.web3forms.com/submit" method="POST">
+            <input type="hidden" name="access_key" value="dfcd32be-5e33-4a9d-ba92-32820dd6fd91">
+            <input type="hidden" name="subject" value="හීවැල්කඳුර ම.වි. වෙබ් අඩවියෙන් නව පණිවිඩයක්">
+            <div class="form-group"><label for="name">ඔබගේ නම</label><input type="text" id="name" name="name" required></div>
+            <div class="form-group"><label for="email">ඔබගේ ඊමේල්</label><input type="email" id="email" name="email" required></div>
+            <div class="form-group"><label for="message">ඔබගේ පණිවිඩය</label><textarea id="message" name="message" rows="6" required></textarea></div>
+            <button type="submit" class="nav-button form-submit-button">පණිවිඩය යවන්න</button>
+        </form>
+        <div id="form-status" class="form-status"></div>
+    </section>
+    <section id="creator-section" class="section">
+        <h2>වෙබ් අඩවියේ නිර්මාණකරු</h2>
+        <div class="creator-card-new">
+            <div class="creator-photo-new"><img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEilxHoMqnHUnMQdkpuubpO3b9sDBHxVWccPdKHg4J8YdJGNj0hDg_5an66b7RYBTgb2S0wO79vl_RGIW7JHpoWQ0iX3e_n23YDXbVhga_UOehZ6YaQ1RuNf5ZRy99J3oBWU3vyVmXv9ebiHSnTIfM-Wxnxm3Ygn0qYnAhQhG66-xDSjEA5HeFitW61My2bg/s746/WhatsApp%20Image%202025-06-24%20at%2000.28.12_613486d0.jpg" alt="නිර්මාණකරු"></div>
+            <div class="creator-details-new">
+                <h3>සම්පත්</h3><p class="title">වෙබ් නිර්මාණකරු</p>
+                <div class="contact-info"><p>dananjayas362@gmail.com</p><p>077-8529895</p></div>
+                <a href="https://api.whatsapp.com/send?phone=94778529895" target="_blank" class="whatsapp-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19.05 4.94C17.22 3.12 14.72 2 12 2C6.48 2 2 6.48 2 12C2 13.85 2.53 15.54 3.4 17.01L2 22L7 20.6C8.46 21.47 10.15 22 12 22H12.01C17.52 22 22 17.52 22 12C22 9.28 20.88 6.78 19.05 4.94ZM12 20.01C10.37 20.01 8.81 19.53 7.5 18.65L7.17 18.45L4.5 19.25L5.32 16.7L5.1 16.36C4.19 15.03 3.67 13.55 3.67 12C3.67 7.4 7.4 3.67 12 3.67C14.23 3.67 16.33 4.54 17.89 6.1C19.46 7.67 20.33 9.77 20.33 12C20.33 16.6 16.6 20.33 12 20.33L12 20.01ZM17.11 14.23C16.85 14.1 15.66 13.54 15.41 13.45C15.17 13.35 15 13.3 14.83 13.54C14.67 13.78 14.17 14.34 14 14.5C13.83 14.67 13.67 14.7 13.42 14.6C13.17 14.5 12.15 14.16 11 13.12C10.08 12.28 9.42 11.23 9.25 10.95C9.08 10.67 9.21 10.54 9.35 10.4C9.48 10.27 9.63 10.08 9.76 9.93C9.89 9.78 9.95 9.65 10.08 9.4C10.21 9.15 10.15 8.94 10.08 8.78C10.02 8.61 9.5 7.35 9.29 6.84C9.09 6.33 8.88 6.41 8.71 6.41C8.54 6.41 8.38 6.39 8.21 6.39C8.04 6.39 7.75 6.48 7.52 6.71C7.29 6.94 6.71 7.46 6.71 8.61C6.71 9.77 7.55 10.83 7.68 11C7.81 11.17 9.24 13.48 11.51 14.44C13.78 15.4 13.78 15.11 14.28 15.08C14.78 15.04 15.8 14.45 16.02 13.88C16.24 13.3 16.24 12.83 16.18 12.7C16.12 12.57 15.98 12.52 15.77 12.42C15.56 12.32 17.36 14.36 17.11 14.23Z"/></svg><span>WhatsApp</span></a>
+            </div>
+        </div>
+    </section>
+</main>
+</div>
+
+<!-- ============================ Pages (Initially Hidden) ============================ -->
+
+<!-- Photo Gallery Page -->
+<div id="photo-gallery-page" class="hidden">
+    <section class="section visible">
+        <h2>සියලුම ඡායාරූප</h2>
+        <p>අප පාසලේ අමතක නොවන සුන්දර මතකයන්.</p>
+        <div id="photo-gallery-grid" class="full-gallery-grid">
+            <!-- Default placeholder photos will be generated by JS -->
+        </div>
+
+        <!-- Public Photo Submission -->
+        <div class="public-submission-container" style="margin-top: 50px; padding-top: 30px; border-top: 2px solid rgba(255,215,0,0.2);">
+            <button class="nav-button" id="show-public-photo-form">තව photo එකතු කරන්න</button>
+            <div id="public-photo-form-wrapper" style="display: none;">
+                <h3 class="staff-category-title" style="margin-bottom: 20px;">පාසලට ඡායාරූපයක් එක් කරන්න</h3>
+                <p>ඔබ සතු ඡායාරූපයක් (Facebook, Google Drive, Imgur වැනි) ස්ථානයක upload කර, එම Link එක අප වෙත එවන්න.</p>
+                <form id="photo-upload-form" class="contact-form" style="margin-top: 20px;">
+                    <input type="hidden" name="access_key" value="dfcd32be-5e33-4a9d-ba92-32820dd6fd91">
+                    <input type="hidden" name="subject" value="නව ඡායාරූප Link එකක් - හීවැල්කඳුර ම.වි. වෙබ් අඩවිය">
+                    <div class="form-group">
+                        <label for="photo-link">ඡායාරූපයේ Link එක මෙහි දමන්න</label>
+                        <input type="url" id="photo-link" name="photo_link" placeholder="https://..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="photo-description">කෙටි විස්තරයක් (අත්‍යාවශ්‍ය නොවේ)</label>
+                        <textarea id="photo-description" name="photo_description" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="nav-button form-submit-button">Link එක යවන්න</button>
+                </form>
+                <div id="photo-upload-status" class="form-status"></div>
+            </div>
+        </div>
+
+        <!-- Admin Photo Section -->
+        <div class="admin-section-container" style="margin-top: 40px; padding-top: 30px; border-top: 2px solid rgba(255,215,0,0.2);">
+            <button class="nav-button" id="show-admin-photo-login">වෙබ් අඩවි අයිතිකරුට ඡායාරූප එක් කිරීමට</button>
+            <div id="admin-photo-form-container" style="display: none; margin-top: 20px;">
+                <h3 class="staff-category-title" style="margin-bottom: 20px;">නව ඡායාරූපයක් එක් කරන්න (අයිතිකරු)</h3>
+                <form id="admin-photo-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="admin-photo-url">ඡායාරූපයේ Link එක</label>
+                        <input type="url" id="admin-photo-url" name="admin-photo-url" placeholder="https://.../image.jpg" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-photo-desc">කෙටි විස්තරයක්</label>
+                        <textarea id="admin-photo-desc" name="admin-photo-desc" rows="3" placeholder="උදා: 2024 ක්‍රීඩා උළෙල" required></textarea>
+                    </div>
+                    <button type="submit" class="nav-button form-submit-button">ඡායාරූපය වෙබ් අඩවියට එක් කරන්න</button>
+                </form>
+            </div>
+        </div>
+        <button class="nav-button" style="margin-top: 50px;" onclick="showPage('main')">ප්‍රධාන පිටුවට ආපසු යන්න</button>
+    </section>
+</div>
+
+<!-- Video Gallery Page -->
+<div id="video-gallery-page" class="hidden">
+    <section class="section visible">
+        <h2>සියලුම Videos</h2>
+        <p>අප පාසලේ විශේෂ අවස්ථා ඇතුළත් වීඩියෝ.</p>
+        <div id="video-gallery-grid" class="full-gallery-grid">
+            <!-- Default and admin videos will be populated by JS -->
+        </div>
+        
+        <!-- Public Video Submission -->
+        <div class="public-submission-container" style="margin-top: 50px; padding-top: 30px; border-top: 2px solid rgba(255,215,0,0.2);">
+            <button class="nav-button" id="show-public-video-form">තව video එකතු කරන්න</button>
+             <div id="public-video-form-wrapper" style="display: none;">
+                <h3 class="staff-category-title" style="margin-bottom: 20px;">පාසලට වීඩියෝවක් එක් කරන්න</h3>
+                <p>ඔබ සතුව ඇති පාසලට අදාළ වීඩියෝවක YouTube Link එක අප වෙත එවන්න.</p>
+                <form id="video-upload-form" class="contact-form" style="margin-top: 20px;">
+                    <input type="hidden" name="access_key" value="dfcd32be-5e33-4a9d-ba92-32820dd6fd91">
+                    <input type="hidden" name="subject" value="නව වීඩියෝ Link එකක් - හීවැල්කඳුර ම.වි. වෙබ් අඩවිය">
+                    <div class="form-group">
+                        <label for="video-link">YouTube Video Link එක මෙහි දමන්න</label>
+                        <input type="url" id="video-link" name="video_link" placeholder="https://www.youtube.com/watch?v=..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-description">කෙටි විස්තරයක් (අත්‍යාවශ්‍ය නොවේ)</label>
+                        <textarea id="video-description" name="video_description" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="nav-button form-submit-button">Link එක යවන්න</button>
+                </form>
+                <div id="video-upload-status" class="form-status"></div>
+            </div>
+        </div>
+
+        <!-- Admin Video Section -->
+        <div class="admin-section-container" style="margin-top: 40px; padding-top: 30px; border-top: 2px solid rgba(255,215,0,0.2);">
+            <button class="nav-button" id="show-admin-video-login">වෙබ් අඩවි අයිතිකරුට වීඩියෝ එක් කිරීමට</button>
+            <div id="admin-video-form-container" style="display: none; margin-top: 20px;">
+                <h3 class="staff-category-title" style="margin-bottom: 20px;">නව වීඩියෝවක් එක් කරන්න (අයිතිකරු)</h3>
+                <form id="admin-video-form" class="contact-form">
+                    <div class="form-group">
+                        <label for="admin-video-url">YouTube Link එක</label>
+                        <input type="url" id="admin-video-url" name="admin-video-url" placeholder="https://www.youtube.com/watch?v=..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-video-desc">කෙටි විස්තරයක්</label>
+                        <textarea id="admin-video-desc" name="admin-video-desc" rows="3" placeholder="උදා: 2024 වාර්ෂික තූර්ය වාදන සංදර්ශනය" required></textarea>
+                    </div>
+                    <button type="submit" class="nav-button form-submit-button">වීඩියෝව වෙබ් අඩවියට එක් කරන්න</button>
+                </form>
+            </div>
+        </div>
+        <button class="nav-button" style="margin-top: 50px;" onclick="showPage('main')">ප්‍රධාන පිටුවට ආපසු යන්න</button>
+    </section>
+</div>
+
+<!-- Staff Page -->
+<div id="staff-page" class="hidden">
+    <section class="section visible">
+        <h2>අපේ සියලු කාර්යය මණ්ඩලය</h2>
+        <p>අපගේ පාසලේ අභිවෘද්ධිය උදෙසා කැපවීමෙන් සේවය කරන කාර්යය මණ්ඩලය.</p>
+        <h3 class="staff-category-title">විදුහල්පති</h3>
+        <div class="teacher-grid" style="justify-content: center; max-width: 300px; margin: 20px auto;">
+            <div class="teacher-card">
+                <img src="https://via.placeholder.com/120?text=Photo" alt="විදුහල්පති">
+                <h3>නම මෙතනට දාන්න</h3>
+                <p>විදුහල්පති</p>
+            </div>
+        </div>
+        <h3 class="staff-category-title">ගුරුවරු</h3>
+        <div class="teacher-grid">
+            <script>
+                for (let i = 1; i <= 28; i++) { 
+                    document.write(`<div class="teacher-card"><img src="https://via.placeholder.com/120?text=Photo" alt="ගුරුවරයා"><h3>ගුරුවරයාගේ නම ${i}</h3><p>විෂය</p></div>`); 
+                }
+            </script>
+        </div>
+        <button class="nav-button" style="margin-top: 40px;" onclick="showPage('main')">ප්‍රධාන පිටුවට ආපසු යන්න</button>
+    </section>
+</div>
+
+<footer class="footer">
+    <p>© 2025 බ/හීවල්කඳුර මහා විද්‍යාලය. සියලු හිමිකම් ඇවිරිණි.</p>
+    <p>නිර්මාණය හා නඩත්තුව: ➳ᴹᴿSampath۝꧂</p>
+</footer>
+
+<script>
+// =========================================================================
+// ========================= MAIN SCRIPT AREA ==============================
+// =========================================================================
+
+// --- Initial Setup and Page Switching (No changes here) ---
+const preloader = document.getElementById('preloader');
+const mainContentWrapper = document.getElementById('main-content-wrapper');
+const photoGalleryPage = document.getElementById('photo-gallery-page');
+const videoGalleryPage = document.getElementById('video-gallery-page');
+const staffPage = document.getElementById('staff-page');
+
+document.addEventListener('DOMContentLoaded', () => {
+    preloader.style.opacity = '0';
+    setTimeout(() => { preloader.style.display = 'none'; }, 500);
+});
+
+function showPage(pageId) {
+    preloader.style.display = 'flex';
+    setTimeout(() => { preloader.style.opacity = '1'; }, 10);
+    setTimeout(() => {
+        mainContentWrapper.classList.add('hidden');
+        photoGalleryPage.classList.add('hidden');
+        videoGalleryPage.classList.add('hidden');
+        staffPage.classList.add('hidden');
+        if (pageId === 'main') { mainContentWrapper.classList.remove('hidden'); } 
+        else { document.getElementById(pageId).classList.remove('hidden'); }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+            preloader.style.opacity = '0';
+            setTimeout(() => { preloader.style.display = 'none'; }, 500);
+        }, 300);
+    }, 500);
+}
+
+function scrollToSection(id) {
+    if (mainContentWrapper.classList.contains('hidden')) {
+        showPage('main');
+        setTimeout(() => {
+            const element = document.getElementById(id);
+            if (element) { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        }, 1200); 
+    } else {
+        const element = document.getElementById(id);
+        if (element) { element.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    }
+}
+
+// --- Slideshow, Animations, etc. (No changes here) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('hero-particles-container');
+    if (container) {
+        const particleCount = 50;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div'); particle.classList.add('particle'); const size = Math.random() * 5 + 1; particle.style.width = `${size}px`; particle.style.height = `${size}px`; particle.style.left = `${Math.random() * 100}%`; particle.style.bottom = `-${size}px`; particle.style.animationDuration = `${Math.random() * 5 + 5}s`; particle.style.animationDelay = `${Math.random() * 5}s`; container.appendChild(particle);
+        }
+    }
+});
+let slideIndex = 1; let slideInterval;
+const animations = ['kenburns-top', 'kenburns-bottom', 'kenburns-left', 'kenburns-right', 'zoom-in', 'zoom-out', 'simple-fade-in'];
+function plusSlides(n) { clearTimeout(slideInterval); showSlides(slideIndex += n); startSlideShow(); }
+function showSlides(n) {
+    let i; let slides = document.getElementsByClassName("mySlides"); if (!slides || slides.length === 0) return;
+    if (n > slides.length) { slideIndex = 1; } if (n < 1) { slideIndex = slides.length; }
+    for (i = 0; i < slides.length; i++) { slides[i].style.display = "none"; animations.forEach(anim => slides[i].classList.remove(anim)); }
+    const currentSlide = slides[slideIndex - 1]; currentSlide.style.display = "block"; const randomAnimation = animations[Math.floor(Math.random() * animations.length)]; currentSlide.classList.add(randomAnimation);
+}
+function startSlideShow() { slideInterval = setTimeout(() => { plusSlides(1); }, 8000); }
+document.addEventListener('DOMContentLoaded', (event) => { showSlides(slideIndex); startSlideShow(); });
+const sections = document.querySelectorAll('.section'); const observer = new IntersectionObserver(entries => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } }); }, { threshold: 0.1 }); sections.forEach(section => { observer.observe(section); });
+
+// =========================================================================
+// ==================== NEW FUNCTIONALITY SCRIPT ===========================
+// =========================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    // --- State and Constants ---
+    let isAdminLoggedIn = false;
+    const ACCESS_KEY = "dfcd32be-5e33-4a9d-ba92-32820dd6fd91";
+
+    // --- DOM Elements ---
+    const photoGrid = document.getElementById('photo-gallery-grid');
+    const videoGrid = document.getElementById('video-gallery-grid');
+
+    // --- Default Content Data ---
+    const defaultPhotos = Array.from({length: 20}, (_, i) => ({
+        url: `https://via.placeholder.com/300x220/764332/F5F5DC?text=Photo+${i + 1}`,
+        description: `පාසලේ ඡායාරූපය ${i + 1}`
+    }));
+    const defaultVideos = [
+        { embedUrl: "https://www.youtube.com/embed/S3pQu6CcztU", description: "පාසලේ වීඩියෝව 1" },
+        { embedUrl: "https://www.youtube.com/embed/jgL7-RPt7D0", description: "පාසලේ වීඩියෝව 2" }
+    ];
+
+    // --- Helper Functions ---
+    const getYouTubeEmbedUrl = (url) => {
+        let videoId = '';
+        try {
+            const urlObj = new URL(url);
+            videoId = urlObj.searchParams.get("v") || urlObj.pathname.split('/').pop();
+        } catch (e) { return null; }
+        return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+    };
+
+    // --- Generic Form Handler for Web3Forms (Text only) ---
+    const handleTextFormSubmit = (formId, statusId, successMessage) => {
+        const form = document.getElementById(formId);
+        const statusDiv = document.getElementById(statusId);
+        if (!form) return;
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const object = { access_key: ACCESS_KEY };
+            formData.forEach((value, key) => { object[key] = value; });
+            const json = JSON.stringify(object);
+
+            statusDiv.innerHTML = "යවමින් පවතී...";
+            statusDiv.className = 'form-status';
+            statusDiv.style.display = 'block';
+
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: json
+            }).then(async (response) => {
+                if (response.status == 200) {
+                    statusDiv.innerHTML = successMessage;
+                    statusDiv.className = 'form-status success';
+                    form.reset();
+                } else throw new Error("API Error");
+            }).catch(error => {
+                statusDiv.innerHTML = "යම් දෝෂයක් ඇතිවිය. කරුණාකර නැවත උත්සාහ කරන්න.";
+                statusDiv.className = 'form-status error';
+            }).finally(() => { setTimeout(() => { statusDiv.style.display = 'none'; }, 6000); });
+        });
+    };
+    
+    // --- Admin Login ---
+    const handleAdminLogin = () => {
+        if (isAdminLoggedIn) return;
+        const username = prompt("පරිශීලක නාමය (Username):");
+        if (username === null) return;
+        const password = prompt("මුරපදය (Password):");
+        if (password === null) return;
+        
+        if (username === "Sampath123" && password === "Sampath2009") {
+            alert("සාර්ථකව ඇතුල් විය! (Admin Mode Activated)");
+            isAdminLoggedIn = true;
+            document.body.classList.add('admin-mode');
+            photoGrid.classList.add('admin-mode');
+            videoGrid.classList.add('admin-mode');
+            document.getElementById('show-admin-photo-login').style.display = 'none';
+            document.getElementById('admin-photo-form-container').style.display = 'block';
+            document.getElementById('show-admin-video-login').style.display = 'none';
+            document.getElementById('admin-video-form-container').style.display = 'block';
+        } else {
+            alert("මුරපදය හෝ පරිශීලක නාමය වැරදියි!");
+        }
+    };
+    
+    // --- Rendering Functions ---
+    const renderPhotos = () => {
+        const adminPhotos = JSON.parse(localStorage.getItem('adminPhotos')) || [];
+        photoGrid.innerHTML = ''; // Clear grid before rendering
+        [...defaultPhotos, ...adminPhotos].forEach((photo, index) => {
+            const isAdminItem = index >= defaultPhotos.length;
+            const itemIndex = isAdminItem ? index - defaultPhotos.length : -1;
+            
+            const card = document.createElement('div');
+            card.className = 'photo-card-full';
+            card.innerHTML = `
+                ${isAdminItem ? `<button class="delete-btn" data-type="photo" data-index="${itemIndex}">×</button>` : ''}
+                <img src="${photo.url}" alt="${photo.description}">
+                <p>${photo.description}</p>
+            `;
+            photoGrid.appendChild(card);
+        });
+    };
+
+    const renderVideos = () => {
+        const adminVideos = JSON.parse(localStorage.getItem('adminVideos')) || [];
+        videoGrid.innerHTML = ''; // Clear grid
+        [...defaultVideos, ...adminVideos].forEach((video, index) => {
+            const isAdminItem = index >= defaultVideos.length;
+            const itemIndex = isAdminItem ? index - defaultVideos.length : -1;
+
+            const card = document.createElement('div');
+            card.className = 'photo-card-full';
+            card.innerHTML = `
+                ${isAdminItem ? `<button class="delete-btn" data-type="video" data-index="${itemIndex}">×</button>` : ''}
+                <iframe src="${video.embedUrl}" title="${video.description}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <p>${video.description}</p>
+            `;
+            videoGrid.appendChild(card);
+        });
+    };
+
+    // --- Admin Add/Delete Logic ---
+    const addItem = (type, data) => {
+        const storageKey = type === 'photo' ? 'adminPhotos' : 'adminVideos';
+        const items = JSON.parse(localStorage.getItem(storageKey)) || [];
+        items.push(data);
+        localStorage.setItem(storageKey, JSON.stringify(items));
+        if (type === 'photo') renderPhotos(); else renderVideos();
+    };
+
+    const deleteItem = (type, index) => {
+        if (!confirm("මෙය ස්ථිරවම මකා දැමීමට අවශ්‍යද?")) return;
+        const storageKey = type === 'photo' ? 'adminPhotos' : 'adminVideos';
+        const items = JSON.parse(localStorage.getItem(storageKey)) || [];
+        items.splice(index, 1);
+        localStorage.setItem(storageKey, JSON.stringify(items));
+        if (type === 'photo') renderPhotos(); else renderVideos();
+    };
+
+    // --- Initial Load and Event Listeners Setup ---
+    
+    // Initial render
+    renderPhotos();
+    renderVideos();
+    
+    // Public form handlers
+    handleTextFormSubmit('contact-form', 'form-status', "ඔබගේ පණිවිඩය සාර්ථකව ලැබුණි. ස්තූතියි!");
+    handleTextFormSubmit('photo-upload-form', 'photo-upload-status', "ඔබගේ Link එක සාර්ථකව ලැබුණි. ස්තූතියි!");
+    handleTextFormSubmit('video-upload-form', 'video-upload-status', "ඔබගේ Link එක සාර්ථකව ලැබුණි. ස්තූතියි!");
+
+    // Toggle public forms
+    document.getElementById('show-public-photo-form').addEventListener('click', function() { this.style.display = 'none'; document.getElementById('public-photo-form-wrapper').style.display = 'block'; });
+    document.getElementById('show-public-video-form').addEventListener('click', function() { this.style.display = 'none'; document.getElementById('public-video-form-wrapper').style.display = 'block'; });
+
+    // Admin login listeners
+    document.getElementById('show-admin-photo-login').addEventListener('click', handleAdminLogin);
+    document.getElementById('show-admin-video-login').addEventListener('click', handleAdminLogin);
+
+    // Admin Add Forms
+    document.getElementById('admin-photo-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const url = e.target.elements['admin-photo-url'].value;
+        const description = e.target.elements['admin-photo-desc'].value;
+        if (url && description) {
+            addItem('photo', { url, description });
+            e.target.reset();
+        }
+    });
+
+    document.getElementById('admin-video-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const url = e.target.elements['admin-video-url'].value;
+        const description = e.target.elements['admin-video-desc'].value;
+        const embedUrl = getYouTubeEmbedUrl(url);
+        if (embedUrl && description) {
+            addItem('video', { embedUrl, description });
+            e.target.reset();
+        } else {
+            alert("කරුණාකර වලංගු YouTube link එකක් සහ විස්තරයක් ඇතුලත් කරන්න.");
+        }
+    });
+
+    // Delegated listener for Delete buttons
+    document.body.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-btn')) {
+            const type = e.target.dataset.type;
+            const index = parseInt(e.target.dataset.index, 10);
+            deleteItem(type, index);
+        }
+    });
+});
+</script>
+
+</body>
+</html>
